@@ -370,7 +370,8 @@ const XopyLanding: React.FC<{ setView: (view: 'landing' | 'admin') => void; hide
 
         {/* RSVP Section */}
         <div className="max-w-lg mx-auto bg-white/5 p-6 rounded-lg border border-white/10">
-          <h3 className="text-xl font-bold mb-4 text-[#e87b3a]">Marque sua presença!</h3>
+          <h3 className="text-xl font-bold mb-2 text-[#e87b3a]">Marque sua presença!</h3>
+          <p className="text-white/70 text-sm mb-4">13:30 • Auditório da Emap</p>
           
           {submitted ? (
             <div className="text-center py-4">
