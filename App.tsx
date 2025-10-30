@@ -10,7 +10,7 @@ const InstagramIcon = (props: React.SVGProps<SVGSVGElement>) => (
     xmlns="http://www.w3.org/2000/svg"
     width="24"
     height="24"
-    viewBox="0 0 24"
+    viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
     strokeWidth="2"
@@ -60,7 +60,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ setView }) => {
     const totalRsvps = stats.total_responses;
     
     const handleCopyLink = () => {
-        const shareUrl = `${window.location.origin}?share=true`;
+        const shareUrl = window.location.origin;
         navigator.clipboard.writeText(shareUrl).then(() => {
             setCopyButtonText('Copiado!');
             setTimeout(() => setCopyButtonText('Copiar Link'), 2000);
@@ -119,7 +119,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ setView }) => {
                     <input 
                         type="text"
                         readOnly
-                        value={`${window.location.origin}?share=true`}
+                        value={window.location.origin}
                         className="w-full p-2 bg-black/30 border border-white/20 rounded-md shadow-sm text-white/80"
                         aria-label="Link de compartilhamento do convite"
                     />
@@ -132,7 +132,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ setView }) => {
                     </button>
                 </div>
                 <p className="text-xs text-white/50 mt-2 text-center sm:text-left">
-                    Este link ocultará o acesso ao painel de administrador para os convidados.
+                    Compartilhe este link com os convidados.
                 </p>
             </section>
     
@@ -211,6 +211,17 @@ const XopyLanding: React.FC<{ setView: (view: 'landing' | 'admin') => void; hide
   const [error, setError] = useState('');
   const { submitRSVP, loading: submitting } = useRSVP();
 
+  const handleAdminAccess = () => {
+    const username = prompt('Usuário:');
+    const password = prompt('Senha:');
+    
+    if (username === 'convite' && password === 'xopy2510') {
+      setView('admin');
+    } else if (username !== null && password !== null) {
+      alert('Usuário ou senha incorretos!');
+    }
+  };
+
   // Countdown timer state and logic
   const [timeLeft, setTimeLeft] = useState({
     days: '00',
@@ -278,6 +289,7 @@ const XopyLanding: React.FC<{ setView: (view: 'landing' | 'admin') => void; hide
       {/* Background elements */}
       <div className="absolute inset-0 bg-grid-orange"></div>
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vw] max-w-lg max-h-lg bg-[#e64c03]/30 rounded-full blur-3xl animate-pulse"></div>
+      
       <img 
         src="/construction-bg.svg"
         alt="Construção Civil"
@@ -426,16 +438,15 @@ const XopyLanding: React.FC<{ setView: (view: 'landing' | 'admin') => void; hide
         </div>
       </main>
 
-      {/* Admin Access Button */}
-      {!hideAdminButton && (
-        <button 
-            onClick={() => setView('admin')}
-            className="absolute bottom-4 right-4 bg-black/40 backdrop-blur-md border border-white/10 p-3 rounded-full text-white/60 hover:text-white hover:border-white/30 transition-all z-20"
-            aria-label="Acessar painel do administrador"
-        >
-            <Shield size={22} />
-        </button>
-      )}
+      {/* Admin Access Button - Invisível mas clicável */}
+      <button 
+          onClick={handleAdminAccess}
+          className="absolute bottom-4 right-4 p-3 rounded-full z-20 opacity-0 hover:opacity-0"
+          aria-label="Acessar painel do administrador"
+          style={{ width: '46px', height: '46px' }}
+      >
+          <Shield size={22} />
+      </button>
     </div>
   );
 };
@@ -443,21 +454,13 @@ const XopyLanding: React.FC<{ setView: (view: 'landing' | 'admin') => void; hide
 
 function App() {
   const [view, setView] = useState<'landing' | 'admin'>('landing');
-  const [isShareView, setIsShareView] = useState(false);
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('share') === 'true') {
-      setIsShareView(true);
-    }
-  }, []);
 
   if (view === 'admin') {
     return <AdminDashboard setView={setView} />;
   }
 
   return (
-    <XopyLanding setView={setView} hideAdminButton={isShareView} />
+    <XopyLanding setView={setView} hideAdminButton={false} />
   );
 }
 
