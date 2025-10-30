@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificar Variáveis - Xopy</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #e64c03;
+            margin-bottom: 30px;
+        }
+        .check {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        pre {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+        button {
+            background: #e64c03;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #e87b3a;
+        }
+        .instructions {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Verificador de Variáveis de Ambiente</h1>
+        
+        <div class="instructions">
+            <strong>📋 Como usar:</strong>
+            <ol>
+                <li>Abra esta página no site da Netlify (após deploy)</li>
+                <li>Clique em "Verificar Variáveis"</li>
+                <li>Veja se as variáveis estão configuradas</li>
+            </ol>
+        </div>
+
+        <button onclick="verificarVariaveis()">🔍 Verificar Variáveis</button>
+        <button onclick="location.reload()">🔄 Recarregar</button>
+
+        <div id="resultado"></div>
+    </div>
+
+    <script>
+        function verificarVariaveis() {
+            const resultado = document.getElementById('resultado');
+            resultado.innerHTML = '<div class="info">Verificando...</div>';
+
+            let html = '<h2>Resultado da Verificação:</h2>';
+
+            // Verificar VITE_SUPABASE_URL
+            const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+            if (supabaseUrl) {
+                html += `
+                    <div class="check success">
+                        ✅ VITE_SUPABASE_URL está configurada
+                        <pre>${supabaseUrl}</pre>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="check error">
+                        ❌ VITE_SUPABASE_URL NÃO está configurada
+                        <p>Configure na Netlify: Site settings > Environment variables</p>
+                        <p>Key: VITE_SUPABASE_URL</p>
+                        <p>Value: https://rrxmpdsbxeogkgcpkkin.supabase.co</p>
+                    </div>
+                `;
+            }
+
+            // Verificar VITE_SUPABASE_ANON_KEY
+            const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+            if (supabaseKey) {
+                html += `
+                    <div class="check success">
+                        ✅ VITE_SUPABASE_ANON_KEY está configurada
+                        <pre>${supabaseKey.substring(0, 50)}...</pre>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="check error">
+                        ❌ VITE_SUPABASE_ANON_KEY NÃO está configurada
+                        <p>Configure na Netlify: Site settings > Environment variables</p>
+                        <p>Key: VITE_SUPABASE_ANON_KEY</p>
+                        <p>Value: [sua chave do Supabase]</p>
+                    </div>
+                `;
+            }
+
+            // Resumo
+            if (supabaseUrl && supabaseKey) {
+                html += `
+                    <div class="check success">
+                        <h3>🎉 Tudo Configurado!</h3>
+                        <p>Todas as variáveis de ambiente estão corretas.</p>
+                        <p>O site deve funcionar normalmente.</p>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="check error">
+                        <h3>⚠️ Ação Necessária</h3>
+                        <p>Configure as variáveis de ambiente na Netlify:</p>
+                        <ol>
+                            <li>Vá em Site settings > Environment variables</li>
+                            <li>Adicione as variáveis faltantes</li>
+                            <li>Faça um novo deploy (Trigger deploy)</li>
+                            <li>Aguarde o build terminar</li>
+                            <li>Recarregue esta página</li>
+                        </ol>
+                    </div>
+                `;
+            }
+
+            // Informações adicionais
+            html += `
+                <h3>📊 Informações do Ambiente:</h3>
+                <pre>${JSON.stringify({
+                    mode: import.meta.env.MODE,
+                    dev: import.meta.env.DEV,
+                    prod: import.meta.env.PROD,
+                    ssr: import.meta.env.SSR
+                }, null, 2)}</pre>
+            `;
+
+            resultado.innerHTML = html;
+        }
+
+        // Verificar automaticamente ao carregar
+        window.addEventListener('load', () => {
+            setTimeout(verificarVariaveis, 500);
+        });
+    </script>
+</body>
+</html>
