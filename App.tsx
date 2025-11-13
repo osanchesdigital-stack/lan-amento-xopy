@@ -231,7 +231,7 @@ const XopyLanding: React.FC<{ setView: (view: 'landing' | 'admin') => void; hide
   });
 
   useEffect(() => {
-    const targetDate = new Date(new Date().getFullYear(), 10, 15, 23, 59, 59); // November 15th
+    const targetDate = new Date(new Date().getFullYear(), 11, 10, 23, 59, 59); // December 10th
 
     const interval = setInterval(() => {
       const now = new Date();
